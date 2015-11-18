@@ -8,24 +8,46 @@ void displayHelp(void)
     printf("-a action  perform `action' on daemon\n");
 }
 
-int parseOptions(int argc, char **argv)
+int parseOptions(int argc,char **argv, struct chint *command, struct chint *configFile, struct chint *help)
 {
     for(int i = 1; i < argc; i++)
     {
-        if (!strcmp("-h",argv[i]))
+        if((!strcmp(argv[i], "-h")) && (help->number == -1))
         {
-            if (!strcmp("-f", argv[i-1]))
-                return i;
-            displayHelp();
-            return 0;
+            help->number = i;
+            help->charactere = "-h";
+        }
+        else if((!strcmp(argv[i], "-f")) && (configFile->number == -1))
+        {
+            if(i+1 < argc)
+            {
+                configFile->number = i+1;
+                configFile->charactere = argv[i+1];
+            }
+            else
+                return 1;
+        }
+        else if((!strcmp(argv[i], "-a")) && (command->number == -1))
+        {
+            if(i+1 < argc)
+            {
+                command->number = i+1;
+                command->charactere = argv[i+1];
+            }
+            else
+                return 1;
         }
     }
-    for(int i = 1; i < argc; i++)
+    return 0;
+}
+
+int helpOption(struct chint *command, struct chint *configFile, struct chint *help)
+{
+    if((help->number != configFile->number) && (help->number != command->number) && (help->number != -1))
     {
-        if (!strcmp("-f", argv[i]))
-        {
-            return i+1;
-        }
+        displayHelp();
+        return 1;
     }
-    return -1;
+
+    return 0;
 }
