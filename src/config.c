@@ -2,13 +2,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-struct conf_struct
-{
-    int port;
-};
-
-size_t BUFFER_SIZE = 1024;
+#include "./myhttpd.h"
 
 
 int openFile(char *filename)
