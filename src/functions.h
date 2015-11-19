@@ -9,4 +9,5 @@ void displayHelp(void);
 
 int helpOption(struct chint *command, struct chint *configFile, struct chint *help);
 
+
 #endif /* !FUNCTIONS_H */

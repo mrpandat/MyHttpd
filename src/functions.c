@@ -51,3 +51,21 @@ int helpOption(struct chint *command, struct chint *configFile, struct chint *he
 
     return 0;
 }
+
+/*
+void* parseConf(int fd)
+{
+    lseek(fd, 0, 0);
+    int j = 0;
+    int current_line = 0;
+    char* buffer = calloc(BUFFER_SIZE, sizeof(char));
+    while (read(fd, buffer, BUFFER_SIZE) > 0)
+    {
+        for (int i = 0; i < BUFFER_SIZE; i++)
+        {
+
+        }
+    }
+
+}
+*/
