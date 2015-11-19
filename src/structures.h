@@ -1,5 +1,5 @@
 #ifndef STRUCTURE_H
-# define STRUCTURE_H
+#define STRUCTURE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,12 +9,20 @@
 #include <string.h>
 #include <sys/types.h>
 
+#define BUFFER_SIZE 1024;
+
+/**
+ * structure used to save informations about arguments passed in command line
+ */
 struct chint {
 	int number;
 	char *charactere;
 };
 
 
+/**
+ * strucure used to save the server's configuration
+ */
 struct conf_struct
 {
 	int port;
@@ -23,8 +31,5 @@ struct conf_struct
 	int pidFile;
 	char *logFile;
 };
-
-size_t BUFFER_SIZE = 1024;
-
 
 #endif /* !STRUCTURE_H */

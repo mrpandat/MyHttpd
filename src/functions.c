@@ -1,5 +1,8 @@
 #include "functions.h"
 
+/**
+ * function displaying help
+ */
 void displayHelp(void)
 {
     printf("Usage: myHTTPd { -h | -f file [-a start|stop|restart|reload] }\n");
@@ -8,6 +11,9 @@ void displayHelp(void)
     printf("-a action  perform `action' on daemon\n");
 }
 
+/**
+ * function for saving command, configuration file and/or help option given as argument in command line
+ */
 int parseOptions(int argc,char **argv, struct chint *command, struct chint *configFile, struct chint *help)
 {
     for(int i = 1; i < argc; i++)
@@ -41,6 +47,9 @@ int parseOptions(int argc,char **argv, struct chint *command, struct chint *conf
     return 0;
 }
 
+/**
+ * functions checking if help has to be displayed.
+ */
 int helpOption(struct chint *command, struct chint *configFile, struct chint *help)
 {
     if((help->number != configFile->number) && (help->number != command->number) && (help->number != -1))
@@ -51,21 +60,3 @@ int helpOption(struct chint *command, struct chint *configFile, struct chint *he
 
     return 0;
 }
-
-/*
-void* parseConf(int fd)
-{
-    lseek(fd, 0, 0);
-    int j = 0;
-    int current_line = 0;
-    char* buffer = calloc(BUFFER_SIZE, sizeof(char));
-    while (read(fd, buffer, BUFFER_SIZE) > 0)
-    {
-        for (int i = 0; i < BUFFER_SIZE; i++)
-        {
-
-        }
-    }
-
-}
-*/
