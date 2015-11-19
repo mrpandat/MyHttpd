@@ -1,12 +1,10 @@
 CC = gcc
-CFLAGS = -std=c99 -g -pedantic -Wextra -Wall -Werror -fpic
-SRC=config.o
+CFLAGS = -pedantic -std=c99 -Werror -Wall -Wextra
+OBJS = functions.o myHTTPd.o
 
-all :myhttpd.so
-
-myhttpd.so:$(SRC)
-	$(CC) $(CFLAGS) -shared $(SRC) -o ../myhttpd.so
+all: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o myHTTPd
 
 clean:
-	rm *.o
-	rm ../*.so
+	rm -f *.o
+	rm -f myHTTPd
