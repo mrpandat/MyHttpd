@@ -17,29 +17,33 @@ int main(int argc, char **argv)
     configFile->charactere = "";
 
     int errorInOptions = parseOptions(argc, argv, command, configFile, help);
-    if(errorInOptions == 1)
+    if (errorInOptions == 1)
     {
         fprintf(stderr, "Error in command line, type ./myHTTPd -h to display help informations\n");
         return 1;
     }
 
     int helpDisplayed = helpOption(command, configFile, help);
-    if(helpDisplayed == 1)
+    if (helpDisplayed == 1)
         return 0;
 
-    if(configFile->number != -1)
+    if (configFile->number != -1)
     {
         fd = open(argv[configFile->number], O_RDONLY);
         resStat = stat(argv[configFile->number], &fileStat);
-        if((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
+        if ((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
         {
             fprintf(stderr, "Error: unable to open \"%s\" as a file\n", argv[configFile->number]);
             return 1;
         }
+
+        //ICI JEAN CODE LE PARSING DU FICHIER DE CONF
+        parseConf(fd);
     }
     if(command->number != -1)
     {
-        if((!strcmp(argv[command->number], "reload")) || (!strcmp(argv[command->number], "start")) || (!strcmp(argv[command->number], "stop")) || (!strcmp(argv[command->number], "restart")))
+        if ((!strcmp(argv[command->number], "reload")) || (!strcmp
+                (argv[command->number], "start")) || (!strcmp(argv[command->number], "stop")) || (!strcmp(argv[command->number], "restart")))
         {
         }
         else
@@ -49,7 +53,8 @@ int main(int argc, char **argv)
         }
     }
 
-        
+
 
     return 0;
 }
+
