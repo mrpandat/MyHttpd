@@ -27,8 +27,7 @@ struct conf_struct
 {
 	int port;
 	char* rootDir;
-
-	int pidFile;
+	char* pidFile;
 	char *logFile;
 };
 
