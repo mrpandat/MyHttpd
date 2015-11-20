@@ -3,12 +3,12 @@
 /**
  * function displaying help
  */
-void displayHelp(void)
+void displayHelp(char *binary)
 {
-    printf("Usage: myHTTPd { -h | -f file [-a start|stop|restart|reload] }\n");
-    printf("-f file    use `file' as configuration file\n");
-    printf("-h         display this help and exit\n");
-    printf("-a action  perform `action' on daemon\n");
+    printf("Usage: %s { -h | -f file [-a start|stop|restart|reload] }\n", basename(binary));
+    printf("  -f file    use `file' as configuration file\n");
+    printf("  -h         display this help and exit\n");
+    printf("  -a action  perform `action' on daemon\n");
 }
 
 /**
@@ -50,11 +50,11 @@ int parseOptions(int argc,char **argv, struct chint *command, struct chint *conf
 /**
  * functions checking if help has to be displayed.
  */
-int helpOption(struct chint *command, struct chint *configFile, struct chint *help)
+int helpOption(struct chint *command, struct chint *configFile, struct chint *help, char *binary)
 {
     if((help->number != configFile->number) && (help->number != command->number) && (help->number != -1))
     {
-        displayHelp();
+        displayHelp(binary);
         return 1;
     }
 

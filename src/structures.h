@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/types.h>
+#include <libgen.h>
 
 #define BUFFER_SIZE 1024
 

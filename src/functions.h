@@ -5,9 +5,9 @@
 
 int parseOptions(int argc, char **argv, struct chint *command, struct chint *configFile, struct chint *help);
 
-void displayHelp(void);
+void displayHelp(char *binary);
 
-int helpOption(struct chint *command, struct chint *configFile, struct chint *help);
+int helpOption(struct chint *command, struct chint *configFile, struct chint *help, char *binary);
 
 struct conf_struct * parseConf(int fd);
 

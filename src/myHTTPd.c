@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    int helpDisplayed = helpOption(command, configFile, help);
+    int helpDisplayed = helpOption(command, configFile, help, argv[0]);
     if (helpDisplayed == 1)
         return 0;
 
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
         if ((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
         {
             fprintf(stderr, "Error: unable to open \"%s\" as a file\n", argv[configFile->number]);
-            return 1;
+            return 2;
         }
         struct conf_struct *config = parseConf(fd);
         config = config;
