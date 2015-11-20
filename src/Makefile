@@ -8,3 +8,7 @@ all: $(OBJS)
 clean:
 	rm -f *.o
 	rm -f myHTTPd
+	rm -rf ../doc/*
+
+doc:
+	doxygen
