@@ -80,8 +80,6 @@ int myStrcmp(char* array, char*array2, size_t size)
     return 0;
 }
 
-size_t BUFFER_SIZE = 1024;
-
 void filleStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
 *conf_file)
 {

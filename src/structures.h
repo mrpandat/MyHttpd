@@ -9,7 +9,7 @@
 #include <string.h>
 #include <sys/types.h>
 
-#define BUFFER_SIZE 1024;
+#define BUFFER_SIZE 1024
 
 /**
  * structure used to save informations about arguments passed in command line
@@ -23,8 +23,7 @@ struct chint {
 /**
  * strucure used to save the server's configuration
  */
-struct conf_struct
-{
+struct conf_struct {
 	int port;
 	char* rootDir;
 	char* pidFile;

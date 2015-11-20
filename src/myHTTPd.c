@@ -36,9 +36,8 @@ int main(int argc, char **argv)
             fprintf(stderr, "Error: unable to open \"%s\" as a file\n", argv[configFile->number]);
             return 1;
         }
-
-        //ICI JEAN CODE LE PARSING DU FICHIER DE CONF
-        parseConf(fd);
+        struct conf_struct *config = parseConf(fd);
+        config = config;
     }
     if(command->number != -1)
     {
