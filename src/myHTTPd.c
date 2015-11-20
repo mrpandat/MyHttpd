@@ -38,6 +38,8 @@ int main(int argc, char **argv)
         }
         struct conf_struct *config = parseConf(fd);
         config = config;
+        printf("port : %d \nRoot : %s \nPID : %s \nLOG : %s\n", config->port,
+               config->rootDir, config->pidFile, config->logFile);
     }
     if(command->number != -1)
     {

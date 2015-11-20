@@ -70,16 +70,6 @@ void resetArray(char* array, size_t size)
     }
 }
 
-int myStrcmp(char* array, char*array2, size_t size)
-{
-    for(size_t i = 0; i < size; i++)
-    {
-        if (array[i] != array2[i])
-            return 1;
-    }
-    return 0;
-}
-
 void filleStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
 *conf_file)
 {
@@ -88,13 +78,13 @@ void filleStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
     char* buffer3 = calloc(BUFFER_SIZE, sizeof(char));
     for (size_t i = k; i < BUFFER_SIZE; i++) {
         if (buffer[i] == '\n'|| buffer[i] == '\0') {
-            if(myStrcmp(buffer2,"port",4) == 0)
+            if(strncmp(buffer2,"port",4) == 0)
                 conf_file->port = atoi(buffer3);
-            if(myStrcmp(buffer2,"root-dir",9) == 0)
+            if(strncmp(buffer2,"root-dir",9) == 0)
                 conf_file->rootDir = buffer3;
-            if(myStrcmp(buffer2,"pid-file",8) == 0)
+            if(strncmp(buffer2,"pid-file",8) == 0)
                 conf_file->pidFile = buffer3;
-            if(myStrcmp(buffer2,"log-file",8) == 0)
+            if(strncmp(buffer2,"log-file",8) == 0)
                 conf_file->logFile = buffer3;
             free(buffer3);
             return;
