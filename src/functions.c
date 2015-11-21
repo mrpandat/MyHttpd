@@ -57,7 +57,6 @@ int helpOption(struct chint *command, struct chint *configFile, struct chint *he
         displayHelp(binary);
         return 1;
     }
-
     return 0;
 
 }
@@ -89,7 +88,8 @@ void filleStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
             free(buffer3);
             return;
         }
-        if (buffer[i] != ' ' && buffer[i] != '=') {
+        if (buffer[i] != ' ' && buffer[i] != '=')
+        {
             buffer3[j] = buffer[i];
             j++;
         }

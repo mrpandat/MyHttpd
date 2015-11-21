@@ -40,6 +40,8 @@ int main(int argc, char **argv)
         config = config;
         printf("port : %d \nRoot : %s \nPID : %s \nLOG : %s\n", config->port,
                config->rootDir, config->pidFile, config->logFile);
+        connectSocket();
+
     }
     if(command->number != -1)
     {

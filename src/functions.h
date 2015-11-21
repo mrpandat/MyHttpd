@@ -2,6 +2,7 @@
 #define FUNCTIONS_H
 
 #include "structures.h"
+#include "server.h"
 
 int parseOptions(int argc, char **argv, struct chint *command, struct chint *configFile, struct chint *help);
 
