@@ -5,4 +5,4 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-void connectSocket();
+void launchApp(uint16_t port);

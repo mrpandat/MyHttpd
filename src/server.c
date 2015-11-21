@@ -1,48 +1,49 @@
 #include "server.h"
 
 
-int openSocket()
-{
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
-    if(sock == -1)
-    {
-        fprintf(stderr, "Error when creating socket..\n");
-        return -1;
-    }
-    return sock;
-
-}
+void launchApp(uint16_t port) {
 
 
-void connectSocket()
-{
-/*
-    struct hostent *host = gethostbyname("localhost");
-
-    if(host == NULL)
-    {
-        fprintf(stderr, "Error when getting infos from the host..\n");
-        return;
+    int listener = socket(AF_INET, SOCK_STREAM, 0);
+    if (listener == -1) {
+        perror("socket()");
     }
 
-    struct sockaddr_in *sock = malloc(sizeof(struct sockaddr_in));
+    struct sockaddr_in *sin = malloc(sizeof(struct sockaddr_in));
 
-    void* host_addr = host->h_addr_list[0];
-    struct in_addr *address = host_addr;
+    sin->sin_addr.s_addr = htonl(INADDR_ANY);
 
-    sock->sin_addr = *address;
-    sock->sin_port = port;
-    sock->sin_family = AF_INET;
+    sin->sin_family = AF_INET;
 
-    void* struct_ptr = sock;
-    struct sockaddr* sock_struct = struct_ptr;
-    if(connect(openSocket(), sock_struct, sizeof(struct sockaddr)) == -1)
-    {
-        fprintf(stderr, "Error when connecting the socket..\n");
-        return;
+    sin->sin_port = htons(port);
+
+    /*
+    void* sin_ptr = sin;
+    struct sockaddr *sock_addr = sin_ptr;
+    if (bind(listener, sock_addr, sizeof sin) == -1) {
+        perror("bind()");
     }
 
+     */
+    if (listen(listener, 5) == -1) {
+        perror("listen()");
+    }
 
-    return;
-    */
+    struct sockaddr_in *csin = {0};
+    void* csin_ptr = csin;
+    struct sockaddr *sock_addr_connect = csin_ptr;
+
+    int caller;
+
+    socklen_t sinsize = sizeof csin;
+
+    printf("waiting for connection:\n");
+    caller = accept(listener, sock_addr_connect,  &sinsize);
+
+    if (caller == -1) {
+        perror("accept()");
+    }
+
+    free(sin);
+
 }

@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -25,7 +26,7 @@ struct chint {
  * strucure used to save the server's configuration
  */
 struct conf_struct {
-	int port;
+	uint16_t port;
 	char* rootDir;
 	char* pidFile;
 	char *logFile;
