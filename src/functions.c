@@ -95,9 +95,39 @@ void filleStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
         }
     }
 }
+
+int checkErrorConf(int fd)
+{
+    char* buffer = calloc(BUFFER_SIZE, sizeof(char));
+    int line = 1;
+    while (read(fd, buffer, BUFFER_SIZE) > 0)
+    {
+        for (size_t i = 0; i < BUFFER_SIZE; i++)
+        {
+            if(buffer[i] == '\n')
+                line++;
+            else if(buffer[i] == '=')
+            {
+                if(buffer[i-1] != ' ' || buffer[i+1] != ' ')
+                {
+                    fprintf(stderr, "Error of syntax in the conf file at line "
+                            "%d \n", line);
+                    free(buffer);
+                    return 1;
+                }
+            }
+        }
+    }
+    free(buffer);
+    return 0;
+}
+
 struct conf_struct * parseConf(int fd)
 {
     struct conf_struct *conf_file = malloc(sizeof(struct conf_struct));
+    if(checkErrorConf(fd) == 1)
+        return conf_file;
+    lseek(fd, 0, 0);
     char* buffer = calloc(BUFFER_SIZE, sizeof(char));
     char* buffer2 = calloc(BUFFER_SIZE, sizeof(char));
     int j = 0;

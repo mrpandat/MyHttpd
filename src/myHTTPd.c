@@ -37,12 +37,12 @@ int main(int argc, char **argv)
             return 2;
         }
         struct conf_struct *config = parseConf(fd);
-        config = config;
+        if(config->port == 0)
+            return 1;
         printf("port : %d \nRoot : %s \nPID : %s \nLOG : %s\n", config->port,
                config->rootDir, config->pidFile, config->logFile);
         launchApp(config->port);
-
-
+        free(config);
     }
     if(command->number != -1)
     {

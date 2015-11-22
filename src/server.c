@@ -4,28 +4,29 @@
 void launchApp(uint16_t port) {
 
 
-    int listener = socket(AF_INET, SOCK_STREAM, 0);
-    if (listener == -1) {
-        perror("socket()");
-    }
 
-    struct sockaddr_in *sin = malloc(sizeof(struct sockaddr_in));
 
-    sin->sin_addr.s_addr = htonl(INADDR_ANY);
+    int my_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-    sin->sin_family = AF_INET;
+    if(my_socket == -1)
+        perror("Create socket");
 
-    sin->sin_port = htons(port);
+    struct sockaddr_in address;
 
-    /*
-    void* sin_ptr = sin;
-    struct sockaddr *sock_addr = sin_ptr;
-    if (bind(listener, sock_addr, sizeof sin) == -1) {
-        perror("bind()");
-    }
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(port);
 
-     */
-    if (listen(listener, 5) == -1) {
+    void* address_ptr = &address;
+    struct sockaddr *sockaddr_f = address_ptr;
+    if(bind(my_socket, sockaddr_f , sizeof(address)) < 0) {
+            perror("Error");
+            exit(-1);
+        }
+
+
+
+    if (listen(my_socket, 5) == -1) {
         perror("listen()");
     }
 
@@ -38,12 +39,11 @@ void launchApp(uint16_t port) {
     socklen_t sinsize = sizeof csin;
 
     printf("waiting for connection:\n");
-    caller = accept(listener, sock_addr_connect,  &sinsize);
+    caller = accept(my_socket, sock_addr_connect,  &sinsize);
 
     if (caller == -1) {
         perror("accept()");
     }
 
-    free(sin);
 
 }
