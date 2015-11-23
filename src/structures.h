@@ -10,8 +10,20 @@
 #include <string.h>
 #include <sys/types.h>
 #include <libgen.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <netdb.h>
 
+
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+#define closesocket(s) close(s)
 #define BUFFER_SIZE 1024
+#define _GNU_SOURCE
 
 /**
  * structure used to save informations about arguments passed in command line
@@ -31,5 +43,10 @@ struct conf_struct {
 	char* pidFile;
 	char *logFile;
 };
+
+typedef int SOCKET;
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr SOCKADDR;
+typedef struct in_addr IN_ADDR;
 
 #endif /* !STRUCTURE_H */
