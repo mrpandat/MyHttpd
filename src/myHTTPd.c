@@ -16,12 +16,10 @@ int main(int argc, char **argv)
     configFile->number = -1;
     configFile->charactere = "";
 
-    struct conf_struct *config = malloc(sizeof(struct conf_struct));
-
     int errorInOptions = parseOptions(argc, argv, command, configFile, help);
     if (errorInOptions == 1)
     {
-        fprintf(stderr, "Error in command line, type %s -h to display help informations\n", argv[0]);
+        fprintf(stderr, "Error in command line, type ./myHTTPd -h to display help informations\n");
         return 1;
     }
 
@@ -41,6 +39,10 @@ int main(int argc, char **argv)
         struct conf_struct *config = parseConf(fd);
         if(config->port == 0)
             return 1;
+        printf("port : %d \nRoot : %s \nPID : %s \nLOG : %s\n", config->port,
+               config->rootDir, config->pidFile, config->logFile);
+        launchApp(config->port);
+        free(config);
     }
     if(command->number != -1)
     {
@@ -53,51 +55,6 @@ int main(int argc, char **argv)
             fprintf(stderr, "\"%s\" is not a valid command\n", command->charactere);
             return 1;
         }
-
-        SOCKET listener = socket(AF_INET, SOCK_STREAM, 0);
-        if(listener == INVALID_SOCKET)
-        {
-            perror("socket()");
-            exit(errno);
-        }
-
-        SOCKADDR_IN sin = { 0 };
-
-        sin.sin_addr.s_addr = htonl(INADDR_ANY);
-
-        sin.sin_family = AF_INET;
-
-        sin.sin_port = htons(config->port);
-
-        if(bind (listener, (SOCKADDR *) &sin, sizeof sin) == SOCKET_ERROR)
-        {
-            perror("bind()");
-            exit(errno);
-        }
-
-        if(listen(listener, 5) == SOCKET_ERROR)
-        {
-            perror("listen()");
-            exit(errno);
-        }
-
-        SOCKADDR_IN csin = { 0 };
-
-        SOCKET caller;
-
-        int sinsize = sizeof csin;
-
-        printf("waiting for connection:\n");
-        caller = accept(listener, (SOCKADDR *)&csin, (socklen_t *)&sinsize);
-
-        if(caller == INVALID_SOCKET)
-        {
-            perror("accept()");
-            exit(errno);
-        }
-
-
-
     }
 
 
