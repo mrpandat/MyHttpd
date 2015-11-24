@@ -137,7 +137,7 @@ struct conf_struct *parseConf(int fd)
             }
             else if(buffer[i] == '=')
             {
-                filleStruct(buffer, buffer2, i, conf_file);
+                fillStruct(buffer, buffer2, i, conf_file);
                 resetArray(buffer2, BUFFER_SIZE);
             }
             else if(buffer[i] != ' ')
