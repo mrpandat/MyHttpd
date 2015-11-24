@@ -1,5 +1,10 @@
 CC = gcc
-CFLAGS = -std=c99 -g -pedantic -Wextra -Wall -fPIC
+CFLAGS = -pedantic -std=c99  -Wall -Wextra
+OBJS = tests.o
 
-all :
-	$(CC) $(CFLAGS) tests.c ../myhttpd.so -o tests
+all: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o test
+
+clean:
+	rm -f *.o
+	rm -f test
