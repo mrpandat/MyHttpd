@@ -17,7 +17,7 @@ void launchApp(uint16_t port)
         exit(-1);
     }
     if (listen(my_socket, 5) == -1)
-        printf(stderr, "Error while listening to the connection");
+        fprintf(stderr, "Error while listening to the connection");
     struct sockaddr_in *csin = {0};
     void* csin_ptr = csin;
     struct sockaddr *sock_addr_connect = csin_ptr;
@@ -25,6 +25,6 @@ void launchApp(uint16_t port)
     printf("waiting for connection:\n");
     int caller = accept(my_socket, sock_addr_connect,  &sinsize);
     if (caller == -1)
-        printf(stderr, "Error while launching accept()");
+        fprintf(stderr, "Error while launching accept()");
 
 }
