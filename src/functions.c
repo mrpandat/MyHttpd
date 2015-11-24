@@ -1,20 +1,16 @@
 #include "functions.h"
 
-/**
- * function displaying help
- */
 void displayHelp(char *binary)
 {
-    printf("Usage: %s { -h | -f file [-a start|stop|restart|reload] }\n", basename(binary));
+    printf("Usage: %s { -h | -f file [-a start|stop|restart|reload] }\n",
+    basename(binary));
     printf("  -f file    use `file' as configuration file\n");
     printf("  -h         display this help and exit\n");
     printf("  -a action  perform `action' on daemon\n");
 }
 
-/**
- * function for saving command, configuration file and/or help option given as argument in command line
- */
-int parseOptions(int argc,char **argv, struct chint *command, struct chint *configFile, struct chint *help)
+int parseOptions(int argc,char **argv, struct chint *command,
+    struct chint *configFile, struct chint *help)
 {
     for(int i = 1; i < argc; i++)
     {
@@ -47,12 +43,11 @@ int parseOptions(int argc,char **argv, struct chint *command, struct chint *conf
     return 0;
 }
 
-/**
- * functions checking if help has to be displayed.
- */
-int helpOption(struct chint *command, struct chint *configFile, struct chint *help, char *binary)
+int helpOption(struct chint *command, struct chint *configFile,
+struct chint *help, char *binary)
 {
-    if((help->number != configFile->number) && (help->number != command->number) && (help->number != -1))
+    if((help->number != configFile->number) && (help->number != command->number)
+        && (help->number != -1))
     {
         displayHelp(binary);
         return 1;
@@ -69,7 +64,7 @@ void resetArray(char* array, size_t size)
     }
 }
 
-void filleStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
+void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
 *conf_file)
 {
     size_t j = 0;
@@ -122,7 +117,7 @@ int checkErrorConf(int fd)
     return 0;
 }
 
-struct conf_struct * parseConf(int fd)
+struct conf_struct *parseConf(int fd)
 {
     struct conf_struct *conf_file = malloc(sizeof(struct conf_struct));
     if(checkErrorConf(fd) == 1)
