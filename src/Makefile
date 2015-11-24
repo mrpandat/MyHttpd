@@ -3,11 +3,11 @@ CFLAGS = -pedantic -std=c99 -Werror -Wall -Wextra
 OBJS = functions.o myHTTPd.o server.o
 
 all: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o myHTTPd
+	$(CC) $(CFLAGS) $(OBJS) -o ../myHTTPd
 
 clean:
 	rm -f *.o
-	rm -f myHTTPd
+	rm -f ../myHTTPd
 	rm -rf ../doc
 
 doc:
