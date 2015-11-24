@@ -56,14 +56,6 @@ struct chint *help, char *binary)
 
 }
 
-void resetArray(char* array, size_t size)
-{
-    for(size_t i = 0; i < size; i++)
-    {
-        array[i] = '\0';
-    }
-}
-
 void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
 *conf_file)
 {
@@ -132,13 +124,13 @@ struct conf_struct *parseConf(int fd)
         {
             if(buffer[i] == '\n')
             {
-                resetArray(buffer2, BUFFER_SIZE);
+                memset(buffer2, 0, BUFFER_SIZE);
                 j = 0;
             }
             else if(buffer[i] == '=')
             {
                 fillStruct(buffer, buffer2, i, conf_file);
-                resetArray(buffer2, BUFFER_SIZE);
+                memset(buffer2, 0, BUFFER_SIZE);
             }
             else if(buffer[i] != ' ')
             {
