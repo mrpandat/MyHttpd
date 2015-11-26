@@ -6,3 +6,6 @@ clean:
 
 doc:
 	$(MAKE) -C src doc
+
+test:
+	$(MAKE) -C tests

@@ -29,8 +29,8 @@
  * structure used to save informations about arguments passed in command line
  */
 struct chint {
-	int number;
-	char *charactere;
+    int number;
+    char *charactere;
 };
 
 
@@ -38,10 +38,31 @@ struct chint {
  * strucure used to save the server's configuration
  */
 struct conf_struct {
-	uint16_t port;
-	char* rootDir;
-	char* pidFile;
-	char *logFile;
+    uint16_t port;
+    char* rootDir;
+    char* pidFile;
+    char *logFile;
+};
+
+struct requestHttp {
+    char* method;
+    char* object;
+    float version_http;
+    char* host;
+    char* user_agent;
+    int content_length;
+    char* body;
+};
+
+struct responseHttp {
+    float http_version;
+    int http_code;
+    char* http_message;
+    int date;
+    char* server_info;
+    char* content_type;
+    char* body;
+
 };
 
 typedef int SOCKET;
