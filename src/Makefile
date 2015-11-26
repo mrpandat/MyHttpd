@@ -9,6 +9,9 @@ clean:
 	rm -f *.o
 	rm -f ../myHTTPd
 	rm -rf ../doc
+	rm -rf ../tests/*.o
+	rm -rf myHTTPd
+	rm -rf ../tests/test
 
 doc:
 	doxygen
