@@ -4,7 +4,7 @@
 void launchApp(uint16_t port)
 {
     int my_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if(my_socket == -1)
+    if(my_socket == SOCKET_ERROR)
         perror("Create socket");
     struct sockaddr_in address;
     address.sin_family = AF_INET;
@@ -12,7 +12,7 @@ void launchApp(uint16_t port)
     address.sin_port = htons(port);
     void* address_ptr = &address;
     struct sockaddr *sockaddr_f = address_ptr;
-    if(bind(my_socket, sockaddr_f , sizeof(address)) < 0) {
+    if(bind(my_socket, sockaddr_f , sizeof(address)) <= INVALID_SOCKET) {
         perror("Error");
         exit(-1);
     }
