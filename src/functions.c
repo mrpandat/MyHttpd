@@ -60,18 +60,26 @@ void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
 *conf_file)
 {
     size_t j = 0;
-
     char* buffer3 = calloc(BUFFER_SIZE, sizeof(char));
     for (size_t i = k; i < BUFFER_SIZE; i++) {
         if (buffer[i] == '\n'|| buffer[i] == '\0') {
-            if(strncmp(buffer2,"port",4) == 0)
+            if(strcmp(buffer2,"port") == 0)
                 conf_file->port = atoi(buffer3);
-            if(strncmp(buffer2,"root-dir",9) == 0)
-                conf_file->rootDir = buffer3;
-            if(strncmp(buffer2,"pid-file",8) == 0)
-                conf_file->pidFile = buffer3;
-            if(strncmp(buffer2,"log-file",8) == 0)
-                conf_file->logFile = buffer3;
+            else if (strcmp(buffer2,"root-dir") == 0)
+            {
+                conf_file->rootDir = malloc(sizeof(buffer3));
+                strcpy(conf_file->rootDir, buffer3);
+            }
+            else if (strcmp(buffer2,"pid-file") == 0)
+            {
+                conf_file->pidFile = malloc(sizeof(buffer3));
+                strcpy(conf_file->pidFile, buffer3);
+            }
+            else if (strcmp(buffer2,"log-file") == 0)
+            {
+                conf_file->logFile = malloc(sizeof(buffer3));
+                strcpy(conf_file->logFile,buffer3);
+            }
             free(buffer3);
             return;
         }

@@ -19,18 +19,37 @@
 #include <netdb.h>
 
 
+/**
+ * define a meaningfull name for the socket binding error result
+ */
 #define INVALID_SOCKET -1
+
+/**
+ * define a meaningfull name for the socket creation error result
+ */
 #define SOCKET_ERROR -1
+
+/**
+ * changing name function from close to close socket to be meaningfull
+ */
 #define closesocket(s) close(s)
+
+/**
+ * define a size for all personnal buffers in the project
+ */
 #define BUFFER_SIZE 1024
+
+/**
+ * access to nonstandard GNU/Linux extension functions
+ */
 #define _GNU_SOURCE
 
 /**
  * structure used to save informations about arguments passed in command line
  */
 struct chint {
-	int number;
-	char *charactere;
+    int number;
+    char *charactere;
 };
 
 
@@ -38,15 +57,42 @@ struct chint {
  * strucure used to save the server's configuration
  */
 struct conf_struct {
-	uint16_t port;
-	char* rootDir;
-	char* pidFile;
-	char *logFile;
+    uint16_t port;
+    char* rootDir;
+    char* pidFile;
+    char *logFile;
 };
 
+/**
+ * structure containing some HTTP request informations
+ */
+struct requestHttp {
+    char* method;
+    char* object;
+    float version_http;
+    char* host;
+    char* user_agent;
+    int content_length;
+    char* body;
+};
+
+/**
+ * structure containing some HTTP response informations
+ */
+struct responseHttp {
+    float http_version;
+    int http_code;
+    char* http_message;
+    int date;
+    char* server_info;
+    char* content_type;
+    char* body;
+
+};
+
+/**
+ * changing type name 'int' to 'socket' to recognize socket's identifier
+ */
 typedef int SOCKET;
-typedef struct sockaddr_in SOCKADDR_IN;
-typedef struct sockaddr SOCKADDR;
-typedef struct in_addr IN_ADDR;
 
 #endif /* !STRUCTURE_H */
