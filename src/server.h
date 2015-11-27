@@ -3,7 +3,7 @@
 
 #include "structures.h"
 
-int initSocket();
+void initSocket(struct conf_struct *config);
 void closeSocket(SOCKET socket);
 void sendResponse(SOCKET socket, char* buffer);
 

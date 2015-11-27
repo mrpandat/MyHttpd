@@ -41,8 +41,7 @@ int main(int argc, char **argv)
             return 1;
         printf("port : %d \nRoot : %s \nPID : %s \nLOG : %s\n", config->port,
                config->rootDir, config->pidFile, config->logFile);
-        SOCKET sd = initSocket();
-        sd++;
+        initSocket(config);
         free(config);
     }
     if(command->number != -1)

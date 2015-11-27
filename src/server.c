@@ -23,7 +23,15 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
         exit(1);
     }
     printf("Client Accepted...\n");
-    sendResponse(sd_client, "Welcome user");
+    char buffer[1024];
+
+    if((recv(sd_client, buffer, 1024, 0)) == -1)
+    {
+        fprintf(stderr, "Error when receiving message from client\n");
+        exit(1);
+    }
+    printf("MESSAGE RECEIVE : %s\n", buffer);
+    sendResponse(sd_client,"I'am fine thank you");
 
 }
 
@@ -32,17 +40,17 @@ void receiveMessage(SOCKET sd, struct sockaddr *server)
 
     while(1)
     {
-        if (listen(sd, 5) < 0)
+        if (listen(sd, 1) < 0)
             fprintf(stderr,"Error while listnening ");
         printf("Now listening...\n");
 
         acceptClient(sd, server);
     }
-
+    closeSocket(sd);
 }
 
 
-int initSocket()
+void initSocket(struct conf_struct *config)
 {
     struct sockaddr_in server;
 
@@ -53,7 +61,7 @@ int initSocket()
 
     server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_family = AF_INET;
-    server.sin_port = htons( 3000 );
+    server.sin_port = htons( config->port );
 
     void* sever_ptr = &server;
     struct sockaddr *server_cast = sever_ptr;
@@ -62,15 +70,9 @@ int initSocket()
     if(bind(sd, server_cast ,sizeof(server)) == -1)
     {
         fprintf(stderr,"Error when binding socket\n");
-        return -1;
+        exit(1);
     }
-
     printf("Connected\n");
     receiveMessage(sd, server_cast);
-    return sd;
-}
-
-void closeSocket(SOCKET socket)
-{
-    closesocket(socket);
+    closesocket(sd);
 }
