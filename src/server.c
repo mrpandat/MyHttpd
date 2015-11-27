@@ -1,5 +1,17 @@
 #include "server.h"
 
+
+void sendResponse(SOCKET sd, char* buffer)
+{
+    if( send(sd , buffer , strlen(buffer) , 0) == -1)
+    {
+        fprintf(stderr, "Error when sending message from server\n");
+        exit(1);
+    }
+    printf("Message Send\n");
+}
+
+
 void acceptClient(SOCKET sd, struct sockaddr *server)
 {
     socklen_t size = sizeof(server);
@@ -11,19 +23,22 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
         exit(1);
     }
     printf("Client Accepted...\n");
-
+    sendResponse(sd_client, "Welcome user");
 
 }
 
 void receiveMessage(SOCKET sd, struct sockaddr *server)
 {
 
+    while(1)
+    {
+        if (listen(sd, 5) < 0)
+            fprintf(stderr,"Error while listnening ");
+        printf("Now listening...\n");
 
-    if (listen(sd, 5) < 0)
-        fprintf(stderr,"Error while listnening ");
-    printf("Now listening...\n");
+        acceptClient(sd, server);
+    }
 
-    acceptClient(sd, server);
 }
 
 
@@ -58,14 +73,4 @@ int initSocket()
 void closeSocket(SOCKET socket)
 {
     closesocket(socket);
-}
-
-void sendResponse(SOCKET sd, char* buffer)
-{
-    if( send(sd , buffer , strlen(buffer) , 0) == -1)
-    {
-        fprintf(stderr, "Error when sending message from server\n");
-        exit(1);
-    }
-    printf("Message Send\n");
 }

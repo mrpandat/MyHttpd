@@ -8,14 +8,28 @@ int main()
 {
     int sockfd;
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    struct sockaddr_in that;
+    struct sockaddr_in socket;
 
-    memset(&that,0,sizeof(that)); /* en System V */
-    that.sin_family = AF_INET;
-    that.sin_port = htons(3000);
-    that.sin_addr.s_addr = inet_addr("127.0.0.1");
-    if (connect(sockfd, &that, sizeof(that)) < 0) /* error */
-        fprintf(stderr,"Error when connecting client");
+    socket.sin_family = AF_INET;
+    socket.sin_port = htons(3000);
+    socket.sin_addr.s_addr = inet_addr("127.0.0.1");
+    void *socket_ptr = &socket;
+    struct sockaddr *socket_addr = socket_ptr;
+    if (connect(sockfd, socket_addr, sizeof(socket)) < 0) /* error */
+        fprintf(stderr,"Error when connecting client\n");
+
+    char buffer[1024];
+    int n = 0;
+
+    if((n = recv(sockfd, buffer, sizeof buffer - 1, 0)) < 0)
+    {
+        perror("recv()");
+        exit(errno);
+    }
+
+    buffer[n] = '\0';
+    printf("MESSAGE RECEIVE : %s \n",buffer);
+
 
     return 0;
 }
