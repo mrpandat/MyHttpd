@@ -1,6 +1,10 @@
+#ifndef SERVER_H
+#define SERVER_H
+
 #include "structures.h"
 
-/**
- * function creating the receiver socket, waiting for a connection
- */
-void launchApp(uint16_t port);
+int initSocket();
+void closeSocket(SOCKET socket);
+void sendResponse(SOCKET socket, char* buffer);
+
+#endif

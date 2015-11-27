@@ -1,30 +1,71 @@
 #include "server.h"
 
-
-void launchApp(uint16_t port)
+void acceptClient(SOCKET sd, struct sockaddr *server)
 {
-    int my_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if(my_socket == SOCKET_ERROR)
-        perror("Create socket");
-    struct sockaddr_in address;
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(port);
-    void* address_ptr = &address;
-    struct sockaddr *sockaddr_f = address_ptr;
-    if(bind(my_socket, sockaddr_f , sizeof(address)) <= INVALID_SOCKET) {
-        perror("Error");
-        exit(-1);
-    }
-    if (listen(my_socket, 5) == -1)
-        fprintf(stderr, "Error while listening to the connection");
-    struct sockaddr_in *csin = {0};
-    void* csin_ptr = csin;
-    struct sockaddr *sock_addr_connect = csin_ptr;
-    socklen_t sinsize = sizeof csin;
-    printf("waiting for connection:\n");
-    int caller = accept(my_socket, sock_addr_connect,  &sinsize);
-    if (caller == -1)
-        fprintf(stderr, "Error while launching accept()");
+    socklen_t size = sizeof(server);
 
+    int sd_client = accept(sd, server, &size);
+    if(sd_client == -1)
+    {
+        fprintf(stderr, "Error when accepting sockect from server\n");
+        exit(1);
+    }
+    printf("Client Accepted...\n");
+
+
+}
+
+void receiveMessage(SOCKET sd, struct sockaddr *server)
+{
+
+
+    if (listen(sd, 5) < 0)
+        fprintf(stderr,"Error while listnening ");
+    printf("Now listening...\n");
+
+    acceptClient(sd, server);
+}
+
+
+int initSocket()
+{
+    struct sockaddr_in server;
+
+
+    int sd = socket(AF_INET , SOCK_STREAM , 0);
+    if (sd == -1)
+        printf("Could not create socket");
+
+    server.sin_addr.s_addr = htonl(INADDR_ANY);
+    server.sin_family = AF_INET;
+    server.sin_port = htons( 3000 );
+
+    void* sever_ptr = &server;
+    struct sockaddr *server_cast = sever_ptr;
+
+
+    if(bind(sd, server_cast ,sizeof(server)) == -1)
+    {
+        fprintf(stderr,"Error when binding socket\n");
+        return -1;
+    }
+
+    printf("Connected\n");
+    receiveMessage(sd, server_cast);
+    return sd;
+}
+
+void closeSocket(SOCKET socket)
+{
+    closesocket(socket);
+}
+
+void sendResponse(SOCKET sd, char* buffer)
+{
+    if( send(sd , buffer , strlen(buffer) , 0) == -1)
+    {
+        fprintf(stderr, "Error when sending message from server\n");
+        exit(1);
+    }
+    printf("Message Send\n");
 }
