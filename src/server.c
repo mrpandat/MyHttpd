@@ -107,20 +107,20 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     response->http_version = request->version;
     response->http_code = "200";
     response->http_message = "OK\n";
-    /*char P[9];
-    char A[9];
- 
-    _strtime(P);
-    _strdate(A);
- 
-    printf ("Nous sommes le %s et il est %s\n\n",A,P);*/
-    response->date = "Date: Mon, 13 Oct 2015 13:17:20 GMT\n";
+    time_t timestamp; 
+    struct tm *t; 
+  
+    timestamp = time(NULL); 
+    t = localtime(&timestamp); 
+    char *date = malloc(BUFFER_SIZE);
+    char *format = "%a, %d %b %Y %X %Z";
+    strftime(date, BUFFER_SIZE, format, t);
+    printf("DATE: %s\n", date);
+    response->date = date;
     response->server_info = "Server: myHTTPD: 1.0\n";
     response->content_type = "Content -type: text/html\n\n";
     response->body = "<h1>MyHTTPd</h1\n";
     char *buftemp = fillBufferWithStruct(response);
-    printf("Code HTTP: %d\n", checkErrorRequest(request));
-    printf("Code FILE : %d\n", checkErrorFile(request->file));
     free(request->file);
     free(request->get);
     free(request->version);
