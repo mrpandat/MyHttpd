@@ -65,19 +65,6 @@ struct conf_struct {
 };
 
 /**
- * structure containing some HTTP request informations
- */
-struct requestHttp {
-    char* method;
-    char* object;
-    float version_http; 
-    char* host;
-    char* user_agent;
-    int content_length;
-    char* body;
-};
-
-/**
  * structure containing some HTTP response informations
  */
 struct responseHttp {
@@ -89,6 +76,15 @@ struct responseHttp {
     char* content_type;
     char* body;
 }__attribute__((packed));
+
+/**
+ * structure containing some HTTP request informations
+ */
+struct requestHttp {
+    char *get;
+    char *file;
+    char *version;
+};
 
 /**
  * changing type name 'int' to 'socket' to recognize socket's identifier

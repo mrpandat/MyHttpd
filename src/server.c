@@ -61,6 +61,8 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
         exit(1);
     }
     buffer[n] = '\0';
+    struct requestHttp *request = fillRequest(buffer);
+    request = request;
     printf("MESSAGE RECEIVE : %s\n\n", buffer);
     struct responseHttp *response= malloc(sizeof(struct responseHttp));
     response->http_version = "HTTP/1.1";
@@ -122,7 +124,45 @@ void initSocket(struct conf_struct *config)
     printf("Connected\n");
     receiveMessage(sd, server_cast);
 
-    printf("Code : %d", checkErrorFile("README"));
+    printf("Code : %d\n", checkErrorFile("README"));
     shutdown(sd,2);
     close(sd);
+}
+
+struct requestHttp *fillRequest(char *buffer)
+{
+    struct requestHttp *request = malloc(sizeof(struct requestHttp));
+    char *line = malloc(BUFFER_SIZE);
+    request->file = malloc(BUFFER_SIZE);
+    request->version = malloc(BUFFER_SIZE);
+    request->get = malloc(BUFFER_SIZE);
+    int i = 0;
+    while (buffer[i] != '\n')
+    {
+        line[i] = buffer[i];
+        i++;
+    }
+    
+    int j = 0;
+    int x = 0;
+    while(line[x] != ' ')
+    {
+        request->get[j] = line[x];
+        x++;
+    }
+    x++;
+    j = 0;
+    while(line[x] != ' ')
+    {
+        request->file[j] = line[x];
+        x++;
+    }
+    x++;
+    j = 0;
+    while(line[x] != '\n')
+    {
+        request->version[j] = line[x];
+    }
+    return request;
+
 }
