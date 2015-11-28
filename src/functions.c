@@ -179,8 +179,13 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
             free(configFile);
             return 1;
         }
+
         close(fd);
         initSocket(config);
+        free(config->rootDir);
+        free(config->pidFile);
+        free(config->logFile);
+        free(config);
 
     }
     else if(!strcmp(argv[command->number], "stop"))

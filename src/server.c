@@ -37,10 +37,13 @@ char* getErrorMessage(int error)
 
 int checkErrorRequest(struct requestHttp *request)
 {
+    for(size_t i = 0; i < sizeof(request->version); i++)
+        request->version[i] = request->version[i];
+    printf("version :%s. %lu\n",request->version, sizeof(request));
     printf("get :%s.\n",request->get);
     printf("file:%s.\n",request->file);
-    if( strcmp(request->version,"HTTP/1.0") == 0 ||
-            strcmp(request->version, "HTTP/1.1") == 0)
+    if( (strcmp(request->version,"HTTP/1.0") == 0) ||
+                (strcmp(request->version, "HTTP/1.1")) == 0)
     {
         if(strcmp("GET", request->get) == 0)
         {
