@@ -151,3 +151,43 @@ struct conf_struct *parseConf(int fd)
     free(buffer2);
     return conf_file;
 }
+
+int execCommand(char **argv, struct chint *command, struct conf_struct *config, struct chint *configFile)
+{
+    if(!strcmp(argv[command->number], "start"))
+    {
+        initSocket(config);
+        free(config);
+    }
+    else if(!strcmp(argv[command->number], "reload"))
+    {
+        struct stat fileStat;
+        int fd = open(argv[configFile->number], O_RDONLY);
+        int resStat = stat(argv[configFile->number], &fileStat);
+        if ((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
+        {
+            fprintf(stderr, "Error: unable to open \"%s\" as a file\n",
+            argv[configFile->number]);
+            return 2;
+        }
+        config = parseConf(fd);
+        if(config->port == 0)
+            return 1;
+        close(fd);
+        initSocket(config);
+        free(config);
+    }
+    else if(!strcmp(argv[command->number], "stop"))
+    {
+        return 0;
+    }
+    else
+    {
+        printf("restarting...\n");
+        int status = system("./myHTTPd -f src/myHTTPd.conf -a start");
+        if(!WIFEXITED(status))
+            return 0;
+        else return WEXITSTATUS(status);
+    }
+    return 0;
+}

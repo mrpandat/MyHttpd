@@ -16,10 +16,12 @@ int main(int argc, char **argv)
     configFile->number = -1;
     configFile->charactere = "";
 
+    struct conf_struct *config = NULL;
+
     int errorInOptions = parseOptions(argc, argv, command, configFile, help);
     if (errorInOptions == 1)
     {
-        fprintf(stderr, "Error in command line, type ./myHTTPd -h to display help informations\n");
+        fprintf(stderr, "Error in command line, type %s -h to display help informations\n", argv[0]);
         return 1;
     }
 
@@ -33,26 +35,28 @@ int main(int argc, char **argv)
         resStat = stat(argv[configFile->number], &fileStat);
         if ((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
         {
-            fprintf(stderr, "Error: unable to open \"%s\" as a file\n", argv[configFile->number]);
+            fprintf(stderr, "Error: unable to open \"%s\" as a file\n",
+                argv[configFile->number]);
             return 2;
         }
-        struct conf_struct *config = parseConf(fd);
+        config = parseConf(fd);
         if(config->port == 0)
             return 1;
-        printf("port : %d \nRoot : %s \nPID : %s \nLOG : %s\n", config->port,
-               config->rootDir, config->pidFile, config->logFile);
-        initSocket(config);
-        free(config);
     }
     if(command->number != -1)
     {
         if ((!strcmp(argv[command->number], "reload")) || (!strcmp
-                (argv[command->number], "start")) || (!strcmp(argv[command->number], "stop")) || (!strcmp(argv[command->number], "restart")))
+            (argv[command->number], "start")) ||
+            (!strcmp(argv[command->number], "stop")) ||
+            (!strcmp(argv[command->number], "restart")))
         {
+            return execCommand(argv, command, config, configFile);
+
         }
         else
         {
-            fprintf(stderr, "\"%s\" is not a valid command\n", command->charactere);
+            fprintf(stderr, "\"%s\" is not a valid command\n",
+                command->charactere);
             return 1;
         }
     }
