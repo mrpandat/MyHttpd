@@ -3,7 +3,9 @@
 #include "../src/structures.h"
 #include "../src/functions.h"
 
-
+/**
+ * function sending a test request
+ */
 void sendRequest(SOCKET sd, char* buffer)
 {
     if( send(sd , buffer , strlen(buffer) , 0) == -1)
