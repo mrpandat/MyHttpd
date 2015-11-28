@@ -19,13 +19,13 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     int sd_client = accept(sd, server, &size);
     if(sd_client == -1)
     {
-        fprintf(stderr, "Error when accepting sockect from server\n");
+        fprintf(stderr, "Error when accepting socket from server\n");
         exit(1);
     }
     printf("Client Accepted...\n");
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
 
-    if((recv(sd_client, buffer, 1024, 0)) == -1)
+    if((recv(sd_client, buffer, BUFFER_SIZE, 0)) == -1)
     {
         fprintf(stderr, "Error when receiving message from client\n");
         exit(1);

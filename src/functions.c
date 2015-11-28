@@ -152,7 +152,7 @@ struct conf_struct *parseConf(int fd)
     return conf_file;
 }
 
-int execCommand(char **argv, struct chint *command, struct conf_struct *config, struct chint *configFile)
+int execCommand(int argc, char **argv, struct chint *command, struct conf_struct *config, struct chint *configFile)
 {
     if(!strcmp(argv[command->number], "start"))
     {
@@ -184,7 +184,22 @@ int execCommand(char **argv, struct chint *command, struct conf_struct *config, 
     else
     {
         printf("restarting...\n");
-        int status = system("./myHTTPd -f src/myHTTPd.conf -a start");
+        char *commandLine = malloc(BUFFER_SIZE);
+        commandLine = argv[0];   
+        char *strSpace = " ";
+        for(int i = 1; i < argc; i++)
+        {
+            if(!strcmp(argv[i], "restart"))
+                argv[i] = "start";
+            char *temp = malloc(BUFFER_SIZE);
+            temp = strcpy(temp,argv[i]);
+            commandLine = strcat(commandLine, strSpace);
+            commandLine = strcat(commandLine, temp); 
+            free(temp);
+        }
+        printf("%s\n", commandLine);
+        int status = system(commandLine);
+        free(commandLine);
         if(!WIFEXITED(status))
             return 0;
         else return WEXITSTATUS(status);
