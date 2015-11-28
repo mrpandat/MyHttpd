@@ -177,6 +177,10 @@ void initSocket(struct conf_struct *config)
 
     shutdown(sd,2);
     close(sd);
+    free(config->rootDir);
+    free(config->pidFile);
+    free(config->logFile);
+    free(config);
 }
 
 struct requestHttp *fillRequest(char *buffer)

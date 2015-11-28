@@ -63,22 +63,22 @@ void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
     char* buffer3 = calloc(BUFFER_SIZE, sizeof(char));
     for (size_t i = k; i < BUFFER_SIZE; i++) {
         if (buffer[i] == '\n'|| buffer[i] == '\0') {
-            if(strcmp(buffer2,"port") == 0)
+            if (strcmp(buffer2, "port") == 0)
                 conf_file->port = atoi(buffer3);
-            else if (strcmp(buffer2,"root-dir") == 0)
+            else if (strcmp(buffer2, "root-dir") == 0)
             {
                 conf_file->rootDir = malloc(sizeof(buffer3));
                 strcpy(conf_file->rootDir, buffer3);
             }
-            else if (strcmp(buffer2,"pid-file") == 0)
+            else if (strcmp(buffer2, "pid-file") == 0)
             {
                 conf_file->pidFile = malloc(sizeof(buffer3));
                 strcpy(conf_file->pidFile, buffer3);
             }
-            else if (strcmp(buffer2,"log-file") == 0)
+            else if (strcmp(buffer2, "log-file") == 0)
             {
                 conf_file->logFile = malloc(sizeof(buffer3));
-                strcpy(conf_file->logFile,buffer3);
+                strcpy(conf_file->logFile, buffer3);
             }
             free(buffer3);
             return;
@@ -157,11 +157,7 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
     if(!strcmp(argv[command->number], "start"))
     {
         initSocket(config);
-        free(config);
-        free(config->rootDir);
-        free(config->pidFile);
-        free(config->logFile);
-        free(config);
+        free(command);
         free(configFile);
     }
     else if(!strcmp(argv[command->number], "reload"))
@@ -173,6 +169,10 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
         {
             fprintf(stderr, "Error: unable to open \"%s\" as a file\n",
             argv[configFile->number]);
+            free(config->rootDir);
+            free(config->pidFile);
+            free(config->logFile);
+            free(config);
             free(command);
             free(configFile);
             return 2;
@@ -180,6 +180,10 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
         config = parseConf(fd);
         if(config->port == 0)
         {
+            free(config->rootDir);
+            free(config->pidFile);
+            free(config->logFile);
+            free(config);
             free(command);
             free(configFile);
             return 1;
@@ -187,22 +191,25 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
 
         close(fd);
         initSocket(config);
-        free(config->rootDir);
-        free(config->pidFile);
-        free(config->logFile);
-        free(config);
+        free(command);
         free(configFile);
 
 
     }
     else if(!strcmp(argv[command->number], "stop"))
     {
+        free(config->rootDir);
+        free(config->pidFile);
+        free(config->logFile);
+        free(config);
+        free(command);
+        free(configFile);
         return 0;
     }
     else
     {
         printf("restarting...\n");
-        char *commandLine = malloc(BUFFER_SIZE);
+        char *commandLine;
         commandLine = argv[0];   
         char *strSpace = " ";
         for(int i = 1; i < argc; i++)
@@ -215,9 +222,13 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
             commandLine = strcat(commandLine, temp); 
             free(temp);
         }
-        int status = system(commandLine);
         free(command);
         free(configFile);
+        free(config->rootDir);
+        free(config->pidFile);
+        free(config->logFile);
+        free(config);
+        int status = system(commandLine);
         if(!WIFEXITED(status))
             return 0;
         else return WEXITSTATUS(status);
