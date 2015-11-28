@@ -1,41 +1,44 @@
 #include "server.h"
 
-int checkErrorFile(char* filename)
+char* checkErrorFile(char* filename)
 {
     if( (access( filename, 0 )) != -1 )
     {
         if( (access( filename, R_OK )) == -1 )
-            return 403;
-        return 200;
+            return "403";
+        struct stat fileStat;
+        int fd = open(filename, O_RDONLY);
+        int resStat = stat(filename, &fileStat);
+        if ((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
+            return "406";
+        else
+            return "200";
     }
     else
-    {
-        return 404;
-    }
+        return "404";
 }
 
-char* getErrorMessage(int error)
+char* getErrorMessage(char* error)
 {
-    switch(error)
-    {
-        case (200):
-            return "OK\n";
-        case (400):
-            return "Bad Request\n";
-        case (403):
-            return "Forbidden\n";
-        case (404):
-            return "Not Found\n";
-        case (405):
-            return "Method Not Allowed\n";
-        case (501):
-            return "Internal Server Error\n";
-        default:
-            return "Internal Error";
-    }
+
+    if (!strcmp("200",error))
+        return "OK\n";
+    if (!strcmp("400",error))
+        return "Bad Request\n";
+    if (!strcmp("403",error))
+        return "Forbidden\n";
+    if (!strcmp("404",error))
+        return "Not Found\n";
+    if (!strcmp("405",error))
+        return "Method Not Allowed\n";
+    if (!strcmp("406",error))
+        return "Not Acceptable\n";
+    if (!strcmp("501",error))
+        return "Internal Server Error\n";
+    return "Internal Error";
 }
 
-int checkErrorRequest(struct requestHttp *request)
+char* checkErrorRequest(struct requestHttp *request)
 {
     char buffer[1024];
     for(size_t i = 0; i < sizeof(request->version); i++)
@@ -47,13 +50,13 @@ int checkErrorRequest(struct requestHttp *request)
     {
         if(strcmp("GET", request->get) == 0)
         {
-            return 200;
+            return "200";
         }
         if( strcmp(request->version,"HTTP/1.0") == 0 &&
                 ((strcmp("HEAD",request->get) == 0)
                  || (strcmp("POST", request->get) == 0)))
         {
-            return 501;
+            return "501";
 
         }
         else if( strcmp(request->version,"HTTP/1.1") == 0 && (
@@ -61,14 +64,15 @@ int checkErrorRequest(struct requestHttp *request)
                 (strcmp("TRACE",request->get) == 0) ||
                 (strcmp("UPDATE",request->get) == 0) ||
                 (strcmp("DELETE", request->get) == 0)))
-            return 501;
+            return "501";
         else
-            return 405;
+            return "405";
 
     }
     else
-        return 400;
+        return "400";
 }
+
 
 void sendResponse(SOCKET sd, char* buffer)
 {
@@ -105,13 +109,17 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
 
     struct responseHttp *response= malloc(sizeof(struct responseHttp));
     response->http_version = request->version;
-    response->http_code = "200";
-    response->http_message = "OK\n";
-    time_t timestamp; 
-    struct tm *t; 
-  
-    timestamp = time(NULL); 
-    t = localtime(&timestamp); 
+    response->http_code =  checkErrorFile(request->file);
+    if(!strcmp(checkErrorFile(request->file), "200"))
+        response->http_code =checkErrorRequest(request);
+
+    response->http_message = getErrorMessage(response->http_code);
+
+    time_t timestamp;
+    struct tm *t;
+
+    timestamp = time(NULL);
+    t = localtime(&timestamp);
     char *date = malloc(BUFFER_SIZE);
     char *format = "%a, %d %b %Y %X %Z";
     strftime(date, BUFFER_SIZE, format, t);
@@ -121,6 +129,8 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     response->content_type = "Content -type: text/html\n\n";
     response->body = "<h1>MyHTTPd</h1\n";
     char *buftemp = fillBufferWithStruct(response);
+    printf("Code HTTP: %s\n", response->http_code);
+    printf("Code FILE : %s\n", response->http_message);
     free(request->file);
     free(request->get);
     free(request->version);
