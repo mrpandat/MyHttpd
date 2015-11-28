@@ -168,11 +168,17 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
         {
             fprintf(stderr, "Error: unable to open \"%s\" as a file\n",
             argv[configFile->number]);
+            free(command);
+            free(configFile);
             return 2;
         }
         config = parseConf(fd);
         if(config->port == 0)
+        {
+            free(command);
+            free(configFile);
             return 1;
+        }
         close(fd);
         initSocket(config);
         free(config);
@@ -198,6 +204,8 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
             free(temp);
         }
         int status = system(commandLine);
+        free(command);
+        free(configFile);
         if(!WIFEXITED(status))
             return 0;
         else return WEXITSTATUS(status);

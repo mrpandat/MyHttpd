@@ -62,14 +62,20 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     }
     buffer[n] = '\0';
     struct requestHttp *request = fillRequest(buffer);
-    request = request;
     printf("MESSAGE RECEIVE : %s\n\n", buffer);
     struct responseHttp *response= malloc(sizeof(struct responseHttp));
-    response->http_version = "HTTP/1.1";
+    response->http_version = request->version;
     response->http_code = "200";
     response->http_message = "OK\n";
+    /*char P[9];
+    char A[9];
+ 
+    _strtime(P);
+    _strdate(A);
+ 
+    printf ("Nous sommes le %s et il est %s\n\n",A,P);*/
     response->date = "Date: Mon, 13 Oct 2015 13:17:20 GMT\n";
-    response->server_info = "Server: Nginx/1.9.5\n";
+    response->server_info = "Server: myHTTPD: 1.0\n";
     response->content_type = "Content -type: text/html\n\n";
     response->body = "<h1>MyHTTPd</h1>";
     
@@ -123,8 +129,6 @@ void initSocket(struct conf_struct *config)
     }
     printf("Connected\n");
     receiveMessage(sd, server_cast);
-
-    printf("Code : %d\n", checkErrorFile("README"));
     shutdown(sd,2);
     close(sd);
 }
@@ -149,19 +153,25 @@ struct requestHttp *fillRequest(char *buffer)
     {
         request->get[j] = line[x];
         x++;
+        j++;
     }
+    request->get[j] = '\0';
     x++;
     j = 0;
     while(line[x] != ' ')
     {
         request->file[j] = line[x];
         x++;
+        j++;
     }
+    request->file[j] = '\0';
     x++;
     j = 0;
     while(line[x] != '\n')
     {
         request->version[j] = line[x];
+        x++;
+        j++;
     }
     return request;
 

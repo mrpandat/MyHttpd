@@ -27,7 +27,12 @@ int main(int argc, char **argv)
 
     int helpDisplayed = helpOption(command, configFile, help, argv[0]);
     if (helpDisplayed == 1)
+    {
+        free(command);
+        free(help);
+        free(configFile);
         return 0;
+    }
 
     if (configFile->number != -1)
     {
@@ -37,11 +42,19 @@ int main(int argc, char **argv)
         {
             fprintf(stderr, "Error: unable to open \"%s\" as a file\n",
                 argv[configFile->number]);
+            free(command);
+            free(help);
+            free(configFile);
             return 2;
         }
         config = parseConf(fd);
         if(config->port == 0)
+        {
+            free(command);
+            free(help);
+            free(configFile);
             return 1;
+        }
     }
     if(command->number != -1)
     {
@@ -50,6 +63,7 @@ int main(int argc, char **argv)
             (!strcmp(argv[command->number], "stop")) ||
             (!strcmp(argv[command->number], "restart")))
         {
+            free(help);
             return execCommand(argc, argv, command, config, configFile);
 
         }

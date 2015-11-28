@@ -11,6 +11,6 @@ void sendResponse(SOCKET socket, char* buffer);
 
 char *fillBufferWithStruct(struct responseHttp *response);
 
-struct responseHttp *fillRequest(char *buffer);
+struct requestHttp *fillRequest(char *buffer);
 
 #endif
