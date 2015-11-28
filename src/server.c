@@ -18,17 +18,52 @@ char* getErrorMessage(int error)
 {
     switch(error)
     {
-        case (404):
-            return "Not Found\n";
-        case (403):
-            return "Forbidden\n";
         case (200):
             return "OK\n";
+        case (400):
+            return "Bad Request\n";
+        case (403):
+            return "Forbidden\n";
+        case (404):
+            return "Not Found\n";
+        case (405):
+            return "Method Not Allowed\n";
+        case (501):
+            return "Internal Server Error\n";
         default:
             return "Internal Error";
     }
 }
 
+int checkErrorRequest(struct requestHttp *request)
+{
+    if( strcmp(request->version,"HTTP/1.0") == 0 || strcmp(request->version,
+                                                      "HTTP/1.0") == 0)
+    {
+        if(strcmp("GET", request->get) == 0)
+        {
+            return 200;
+        }
+        if( strcmp(request->version,"HTTP/1.0") == 0 &&
+                ((strcmp("HEAD",request->get) == 0)
+                 || (strcmp("POST", request->get) == 0)))
+        {
+            return 501;
+
+        }
+        else if( strcmp(request->version,"HTTP/1.1") == 0 && (
+                (strcmp("PUT",request->get) == 0) ||
+                (strcmp("TRACE",request->get) == 0) ||
+                (strcmp("UPDATE",request->get) == 0) ||
+                (strcmp("DELETE", request->get) == 0)))
+            return 501;
+        else
+            return 405;
+
+    }
+    else
+        return 400;
+}
 
 void sendResponse(SOCKET sd, char* buffer)
 {
