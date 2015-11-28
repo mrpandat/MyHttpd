@@ -21,7 +21,8 @@ int main(int argc, char **argv)
     int errorInOptions = parseOptions(argc, argv, command, configFile, help);
     if (errorInOptions == 1)
     {
-        fprintf(stderr, "Error in command line, type %s -h to display help informations\n", argv[0]);
+        fprintf(stderr, "Error in command line, type %s -h to display help"
+                " informations\n", argv[0]);
         return 1;
     }
 
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
             return 2;
         }
         config = parseConf(fd);
-        if(config->port == 0)
+        if (config->port == 0)
         {
             free(command);
             free(help);
@@ -56,10 +57,10 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-    if(command->number != -1)
+    if (command->number != -1)
     {
-        if ((!strcmp(argv[command->number], "reload")) || (!strcmp
-            (argv[command->number], "start")) ||
+        if ((!strcmp(argv[command->number], "reload")) ||
+            (!strcmp(argv[command->number], "start")) ||
             (!strcmp(argv[command->number], "stop")) ||
             (!strcmp(argv[command->number], "restart")))
         {

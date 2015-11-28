@@ -6,22 +6,22 @@ void displayHelp(char *binary)
     basename(binary));
     printf("  -f file    use `file' as configuration file\n");
     printf("  -h         display this help and exit\n");
-    printf("  -a action  perform `action' on daemon\n");
+    printf("  -a action  perfor m `action' on daemon\n");
 }
 
-int parseOptions(int argc,char **argv, struct chint *command,
+int parseOptions(int argc, char **argv, struct chint *command,
     struct chint *configFile, struct chint *help)
 {
-    for(int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; i++)
     {
-        if((!strcmp(argv[i], "-h")) && (help->number == -1))
+        if ((!strcmp(argv[i], "-h")) && (help->number == -1))
         {
             help->number = i;
             help->charactere = "-h";
         }
-        else if((!strcmp(argv[i], "-f")) && (configFile->number == -1))
+        else if ((!strcmp(argv[i], "-f")) && (configFile->number == -1))
         {
-            if(i+1 < argc)
+            if (i+1 < argc)
             {
                 configFile->number = i+1;
                 configFile->charactere = argv[i+1];
@@ -29,9 +29,9 @@ int parseOptions(int argc,char **argv, struct chint *command,
             else
                 return 1;
         }
-        else if((!strcmp(argv[i], "-a")) && (command->number == -1))
+        else if ((!strcmp(argv[i], "-a")) && (command->number == -1))
         {
-            if(i+1 < argc)
+            if (i+1 < argc)
             {
                 command->number = i+1;
                 command->charactere = argv[i+1];
@@ -46,7 +46,8 @@ int parseOptions(int argc,char **argv, struct chint *command,
 int helpOption(struct chint *command, struct chint *configFile,
 struct chint *help, char *binary)
 {
-    if((help->number != configFile->number) && (help->number != command->number)
+    if ((help->number != configFile->number) && (help->number !=
+            command->number)
         && (help->number != -1))
     {
         displayHelp(binary);
@@ -56,26 +57,26 @@ struct chint *help, char *binary)
 
 }
 
-void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
+void fillStruct(char* buffer, char* buffer2, size_t k, struct conf_struct
 *conf_file)
 {
     size_t j = 0;
     char* buffer3 = calloc(BUFFER_SIZE, sizeof(char));
-    for (size_t i = k; i < BUFFER_SIZE; i++) {
-        if (buffer[i] == '\n'|| buffer[i] == '\0') {
-            if (strcmp(buffer2, "port") == 0)
+    for  (size_t i = k; i < BUFFER_SIZE; i++) {
+        if  (buffer[i] == '\n'|| buffer[i] == '\0') {
+            if  (strcmp(buffer2, "port") == 0)
                 conf_file->port = atoi(buffer3);
-            else if (strcmp(buffer2, "root-dir") == 0)
+            else if  (strcmp(buffer2, "root-dir") == 0)
             {
                 conf_file->rootDir = malloc(sizeof(buffer3));
                 strcpy(conf_file->rootDir, buffer3);
             }
-            else if (strcmp(buffer2, "pid-file") == 0)
+            else if  (strcmp(buffer2, "pid-file") == 0)
             {
                 conf_file->pidFile = malloc(sizeof(buffer3));
                 strcpy(conf_file->pidFile, buffer3);
             }
-            else if (strcmp(buffer2, "log-file") == 0)
+            else if  (strcmp(buffer2, "log-file") == 0)
             {
                 conf_file->logFile = malloc(sizeof(buffer3));
                 strcpy(conf_file->logFile, buffer3);
@@ -83,7 +84,7 @@ void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
             free(buffer3);
             return;
         }
-        if (buffer[i] != ' ' && buffer[i] != '=')
+        if  (buffer[i] != ' ' && buffer[i] != '=')
         {
             buffer3[j] = buffer[i];
             j++;
@@ -97,13 +98,13 @@ int checkErrorConf(int fd)
     int line = 1;
     while (read(fd, buffer, BUFFER_SIZE) > 0)
     {
-        for (size_t i = 0; i < BUFFER_SIZE; i++)
+        for  (size_t i = 0; i < BUFFER_SIZE; i++)
         {
-            if(buffer[i] == '\n')
+            if (buffer[i] == '\n')
                 line++;
-            else if(buffer[i] == '=')
+            else if (buffer[i] == '=')
             {
-                if(buffer[i-1] != ' ' || buffer[i+1] != ' ')
+                if (buffer[i-1] != ' ' || buffer[i+1] != ' ')
                 {
                     fprintf(stderr, "Error of syntax in the conf file at line "
                             "%d \n", line);
@@ -120,7 +121,7 @@ int checkErrorConf(int fd)
 struct conf_struct *parseConf(int fd)
 {
     struct conf_struct *conf_file = malloc(sizeof(struct conf_struct));
-    if(checkErrorConf(fd) == 1)
+    if (checkErrorConf(fd) == 1)
         return conf_file;
     lseek(fd, 0, 0);
     char* buffer = calloc(BUFFER_SIZE, sizeof(char));
@@ -128,19 +129,19 @@ struct conf_struct *parseConf(int fd)
     int j = 0;
     while (read(fd, buffer, BUFFER_SIZE) > 0)
     {
-        for (size_t i = 0; i < BUFFER_SIZE; i++)
+        for  (size_t i = 0; i < BUFFER_SIZE; i++)
         {
-            if(buffer[i] == '\n')
+            if (buffer[i] == '\n')
             {
                 memset(buffer2, 0, BUFFER_SIZE);
                 j = 0;
             }
-            else if(buffer[i] == '=')
+            else if (buffer[i] == '=')
             {
                 fillStruct(buffer, buffer2, i, conf_file);
                 memset(buffer2, 0, BUFFER_SIZE);
             }
-            else if(buffer[i] != ' ')
+            else if (buffer[i] != ' ')
             {
                 buffer2[j] = buffer[i];
                 j++;
@@ -152,20 +153,21 @@ struct conf_struct *parseConf(int fd)
     return conf_file;
 }
 
-int execCommand(int argc, char **argv, struct chint *command, struct conf_struct *config, struct chint *configFile)
+int execCommand(int argc, char **argv, struct chint *command, struct
+        conf_struct *config, struct chint *configFile)
 {
-    if(!strcmp(argv[command->number], "start"))
+    if (!strcmp(argv[command->number], "start"))
     {
         initSocket(config);
         free(command);
         free(configFile);
     }
-    else if(!strcmp(argv[command->number], "reload"))
+    else if (!strcmp(argv[command->number], "reload"))
     {
         struct stat fileStat;
         int fd = open(argv[configFile->number], O_RDONLY);
         int resStat = stat(argv[configFile->number], &fileStat);
-        if ((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
+        if  ((fd == -1) || (resStat < 0) || (!S_ISREG(fileStat.st_mode)))
         {
             fprintf(stderr, "Error: unable to open \"%s\" as a file\n",
             argv[configFile->number]);
@@ -178,7 +180,7 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
             return 2;
         }
         config = parseConf(fd);
-        if(config->port == 0)
+        if (config->port == 0)
         {
             free(config->rootDir);
             free(config->pidFile);
@@ -196,7 +198,7 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
 
 
     }
-    else if(!strcmp(argv[command->number], "stop"))
+    else if (!strcmp(argv[command->number], "stop"))
     {
         free(config->rootDir);
         free(config->pidFile);
@@ -212,14 +214,14 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
         char *commandLine;
         commandLine = argv[0];   
         char *strSpace = " ";
-        for(int i = 1; i < argc; i++)
+        for (int i = 1; i < argc; i++)
         {
-            if(!strcmp(argv[i], "restart"))
+            if (!strcmp(argv[i], "restart"))
                 argv[i] = "start";
             char *temp = malloc(BUFFER_SIZE);
-            temp = strcpy(temp,argv[i]);
+            temp = strcpy(temp, argv[i]);
             commandLine = strcat(commandLine, strSpace);
-            commandLine = strcat(commandLine, temp); 
+            commandLine = strcat(commandLine, temp);
             free(temp);
         }
         free(command);
@@ -229,7 +231,7 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
         free(config->logFile);
         free(config);
         int status = system(commandLine);
-        if(!WIFEXITED(status))
+        if (!WIFEXITED(status))
             return 0;
         else return WEXITSTATUS(status);
     }

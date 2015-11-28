@@ -2,9 +2,9 @@
 
 char* checkErrorFile(char* filename)
 {
-    if( (access( filename, 0 )) != -1 )
+    if ( (access( filename, 0 )) != -1 )
     {
-        if( (access( filename, R_OK )) == -1 )
+        if ( (access( filename, R_OK )) == -1 )
             return "403";
         struct stat fileStat;
         int fd = open(filename, O_RDONLY);
@@ -21,19 +21,19 @@ char* checkErrorFile(char* filename)
 char* getErrorMessage(char* error)
 {
 
-    if (!strcmp("200",error))
+    if (!strcmp("200", error))
         return "OK\n";
-    if (!strcmp("400",error))
+    if (!strcmp("400", error))
         return "Bad Request\n";
-    if (!strcmp("403",error))
+    if (!strcmp("403", error))
         return "Forbidden\n";
-    if (!strcmp("404",error))
+    if (!strcmp("404", error))
         return "Not Found\n";
-    if (!strcmp("405",error))
+    if (!strcmp("405", error))
         return "Method Not Allowed\n";
-    if (!strcmp("406",error))
+    if (!strcmp("406", error))
         return "Not Acceptable\n";
-    if (!strcmp("501",error))
+    if (!strcmp("501", error))
         return "Internal Server Error\n";
     return "Internal Error";
 }
@@ -45,24 +45,24 @@ char* checkErrorRequest(struct requestHttp *request)
         buffer[i] = request->version[i];
     for(size_t i = 0; i < sizeof(buffer); i++)
         request->version[i] = buffer[i] ;
-    if( (strcmp(request->version,"HTTP/1.0") == 0) ||
+    if ( (strcmp(request->version, "HTTP/1.0") == 0) ||
                 (strcmp(request->version, "HTTP/1.1")) == 0)
     {
-        if(strcmp("GET", request->get) == 0)
+        if (strcmp("GET", request->get) == 0)
         {
             return "200";
         }
-        if( strcmp(request->version,"HTTP/1.0") == 0 &&
-                ((strcmp("HEAD",request->get) == 0)
+        if ( strcmp(request->version, "HTTP/1.0") == 0 &&
+                ((strcmp("HEAD", request->get) == 0)
                  || (strcmp("POST", request->get) == 0)))
         {
             return "501";
 
         }
-        else if( strcmp(request->version,"HTTP/1.1") == 0 && (
-                (strcmp("PUT",request->get) == 0) ||
-                (strcmp("TRACE",request->get) == 0) ||
-                (strcmp("UPDATE",request->get) == 0) ||
+        else if ( strcmp(request->version, "HTTP/1.1") == 0 && (
+                (strcmp("PUT", request->get) == 0) ||
+                (strcmp("TRACE", request->get) == 0) ||
+                (strcmp("UPDATE", request->get) == 0) ||
                 (strcmp("DELETE", request->get) == 0)))
             return "501";
         else
@@ -76,7 +76,7 @@ char* checkErrorRequest(struct requestHttp *request)
 
 void sendResponse(SOCKET sd, char* buffer)
 {
-    if( send(sd , buffer , strlen(buffer) , 0) == -1)
+    if ( send(sd , buffer , strlen(buffer) , 0) == -1)
     {
         fprintf(stderr, "Error when sending message from server\n");
         exit(1);
@@ -90,7 +90,7 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     socklen_t size = sizeof(server);
 
     int sd_client = accept(sd, server, &size);
-    if(sd_client == -1)
+    if (sd_client == -1)
     {
         fprintf(stderr, "Error when accepting socket from server\n");
         exit(1);
@@ -99,7 +99,7 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     char buffer[BUFFER_SIZE];
 
     ssize_t n = recv(sd_client, buffer, BUFFER_SIZE, 0);
-    if(n == -1)
+    if (n == -1)
     {
         fprintf(stderr, "Error when receiving message from client\n");
         exit(1);
@@ -110,7 +110,7 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     struct responseHttp *response= malloc(sizeof(struct responseHttp));
     response->http_version = request->version;
     response->http_code =  checkErrorFile(request->file);
-    if(!strcmp(checkErrorFile(request->file), "200"))
+    if (!strcmp(checkErrorFile(request->file), "200"))
         response->http_code =checkErrorRequest(request);
 
     response->http_message = getErrorMessage(response->http_code);
@@ -142,7 +142,9 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
 char *fillBufferWithStruct(struct responseHttp *response)
 {
     char *buffer = malloc(1024);
-    snprintf(buffer, 1024, "%s%s%s%s%s%s%s", response->http_version, response->http_code, response->http_message, response->date, response->server_info, response->content_type, response->body);
+    snprintf(buffer, 1024, "%s%s%s%s%s%s%s", response->http_version,
+             response->http_code, response->http_message, response->date,
+             response->server_info, response->content_type, response->body);
     return buffer;
 }
 
@@ -150,7 +152,7 @@ void receiveMessage(SOCKET sd, struct sockaddr *server)
 {
 
     if (listen(sd, 1) < 0)
-        fprintf(stderr,"Error while listnening");
+        fprintf(stderr, "Error while listnening");
     printf("Now listening...\n");
 
     acceptClient(sd, server);
@@ -167,7 +169,7 @@ void initSocket(struct conf_struct *config)
     if (sd == -1)
         printf("Could not create socket");
     int bool = 1;
-    setsockopt(sd,SOL_SOCKET,SO_REUSEADDR,&bool,sizeof(int));
+    setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &bool, sizeof(int));
 
     server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_family = AF_INET;
@@ -177,15 +179,15 @@ void initSocket(struct conf_struct *config)
     struct sockaddr *server_cast = sever_ptr;
 
 
-    if(bind(sd, server_cast ,sizeof(server)) == -1)
+    if (bind(sd, server_cast , sizeof(server)) == -1)
     {
-        fprintf(stderr,"Error when binding socket\n");
+        fprintf(stderr, "Error when binding socket\n");
         exit(1);
     }
     printf("Connected\n");
     receiveMessage(sd, server_cast);
 
-    shutdown(sd,2);
+    shutdown(sd, 2);
     close(sd);
     free(config->rootDir);
     free(config->pidFile);
@@ -209,7 +211,7 @@ struct requestHttp *fillRequest(char *buffer)
     
     int j = 0;
     int x = 0;
-    while(line[x] != ' ')
+    while (line[x] != ' ')
     {
         request->get[j] = line[x];
         x++;
@@ -218,7 +220,7 @@ struct requestHttp *fillRequest(char *buffer)
     request->get[j] = '\0';
     x++;
     j = 0;
-    while(line[x] != ' ')
+    while (line[x] != ' ')
     {
         request->file[j] = line[x];
         x++;
@@ -227,7 +229,7 @@ struct requestHttp *fillRequest(char *buffer)
     request->file[j] = '\0';
     x++;
     j = 0;
-    while(line[x] != '\n')
+    while (line[x] != '\n')
     {
         request->version[j] = line[x];
         x++;
