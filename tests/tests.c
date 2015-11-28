@@ -29,15 +29,14 @@ int main()
         fprintf(stderr,"Error when connecting client\n");
     char buffer[1024];
     sendRequest(sockfd, "Hello server, how are you ?");
-    while(1)
+    if((recv(sockfd, buffer, sizeof buffer - 1, 0)) < 0)
     {
-        if((recv(sockfd, buffer, sizeof buffer - 1, 0)) < 0)
-        {
-            perror("recv()");
-            exit(errno);
-        }
-        printf("MESSAGE RECEIVE : %s \n",buffer);
+        perror("recv()");
+        exit(errno);
     }
+
+    printf("MESSAGE RECEIVE : %s \n",buffer);
+
 
 
     return 0;

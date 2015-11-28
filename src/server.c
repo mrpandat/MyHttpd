@@ -30,23 +30,20 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
         fprintf(stderr, "Error when receiving message from client\n");
         exit(1);
     }
-    printf("MESSAGE RECEIVE : %s\n", buffer);
-    sendResponse(sd_client,"I'am fine thank you");
+    printf("MESSAGE RECEIVE : %s\n\n", buffer);
+    sendResponse(sd_client,"I'am fine thank you\n");
 
 }
 
 void receiveMessage(SOCKET sd, struct sockaddr *server)
 {
 
-    while(1)
-    {
-        if (listen(sd, 1) < 0)
-            fprintf(stderr,"Error while listnening ");
-        printf("Now listening...\n");
+    if (listen(sd, 1) < 0)
+        fprintf(stderr,"Error while listnening ");
+    printf("Now listening...\n");
 
-        acceptClient(sd, server);
-    }
-    closeSocket(sd);
+    acceptClient(sd, server);
+    closesocket(sd);
 }
 
 
@@ -58,6 +55,8 @@ void initSocket(struct conf_struct *config)
     int sd = socket(AF_INET , SOCK_STREAM , 0);
     if (sd == -1)
         printf("Could not create socket");
+    int bool = 1;
+    setsockopt(sd,SOL_SOCKET,SO_REUSEADDR,&bool,sizeof(int));
 
     server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_family = AF_INET;
@@ -74,5 +73,7 @@ void initSocket(struct conf_struct *config)
     }
     printf("Connected\n");
     receiveMessage(sd, server_cast);
-    closesocket(sd);
+
+    shutdown(sd,2);
+    close(sd);
 }
