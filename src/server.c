@@ -1,5 +1,34 @@
 #include "server.h"
 
+int checkErrorFile(char* filename)
+{
+    if( (access( filename, 0 )) != -1 )
+    {
+        if( (access( filename, R_OK )) == -1 )
+            return 403;
+        return 200;
+    }
+    else
+    {
+        return 404;
+    }
+}
+
+char* getErrorMessage(int error)
+{
+    switch(error)
+    {
+        case (404):
+            return "Not Found\n";
+        case (403):
+            return "Forbidden\n";
+        case (200):
+            return "OK\n";
+        default:
+            return "Internal Error";
+    }
+}
+
 
 void sendResponse(SOCKET sd, char* buffer)
 {
@@ -25,11 +54,13 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     printf("Client Accepted...\n");
     char buffer[BUFFER_SIZE];
 
-    if((recv(sd_client, buffer, BUFFER_SIZE, 0)) == -1)
+    ssize_t n = recv(sd_client, buffer, BUFFER_SIZE, 0);
+    if(n == -1)
     {
         fprintf(stderr, "Error when receiving message from client\n");
         exit(1);
     }
+    buffer[n] = '\0';
     printf("MESSAGE RECEIVE : %s\n\n", buffer);
     struct responseHttp *response= malloc(sizeof(struct responseHttp));
     response->http_version = "HTTP/1.1";
@@ -91,6 +122,7 @@ void initSocket(struct conf_struct *config)
     printf("Connected\n");
     receiveMessage(sd, server_cast);
 
+    printf("Code : %d", checkErrorFile("README"));
     shutdown(sd,2);
     close(sd);
 }
