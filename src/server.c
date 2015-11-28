@@ -134,7 +134,7 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
         response->body = body;
     }
     else
-        response->body = "";
+        response->body = response->http_message;
     char *buftemp = fillBufferWithStruct(response);
     free(request->file);
     free(request->get);
