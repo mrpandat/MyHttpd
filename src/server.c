@@ -37,8 +37,10 @@ char* getErrorMessage(int error)
 
 int checkErrorRequest(struct requestHttp *request)
 {
-    if( strcmp(request->version,"HTTP/1.0") == 0 || strcmp(request->version,
-                                                      "HTTP/1.0") == 0)
+    printf("get :%s.\n",request->get);
+    printf("file:%s.\n",request->file);
+    if( strcmp(request->version,"HTTP/1.0") == 0 ||
+            strcmp(request->version, "HTTP/1.1") == 0)
     {
         if(strcmp("GET", request->get) == 0)
         {
@@ -97,7 +99,7 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     }
     buffer[n] = '\0';
     struct requestHttp *request = fillRequest(buffer);
-    printf("MESSAGE RECEIVE : %s\n\n", buffer);
+
     struct responseHttp *response= malloc(sizeof(struct responseHttp));
     response->http_version = request->version;
     response->http_code = "200";
@@ -112,9 +114,11 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     response->date = "Date: Mon, 13 Oct 2015 13:17:20 GMT\n";
     response->server_info = "Server: myHTTPD: 1.0\n";
     response->content_type = "Content -type: text/html\n\n";
-    response->body = "<h1>MyHTTPd</h1>";
-    
+    response->body = "<h1>MyHTTPd</h1\n";
     char *buftemp = fillBufferWithStruct(response);
+    printf("Code HTTP: %d\n", checkErrorRequest(request));
+    printf("Code FILE : %d\n", checkErrorFile(request->file));
+
     sendResponse(sd_client, buftemp);
     free(buftemp);
 }
@@ -130,7 +134,7 @@ void receiveMessage(SOCKET sd, struct sockaddr *server)
 {
 
     if (listen(sd, 1) < 0)
-        fprintf(stderr,"Error while listnening ");
+        fprintf(stderr,"Error while listnening");
     printf("Now listening...\n");
 
     acceptClient(sd, server);
@@ -164,6 +168,7 @@ void initSocket(struct conf_struct *config)
     }
     printf("Connected\n");
     receiveMessage(sd, server_cast);
+
     shutdown(sd,2);
     close(sd);
 }
