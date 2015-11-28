@@ -118,7 +118,10 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     char *buftemp = fillBufferWithStruct(response);
     printf("Code HTTP: %d\n", checkErrorRequest(request));
     printf("Code FILE : %d\n", checkErrorFile(request->file));
-
+    free(request->file);
+    free(request->get);
+    free(request->version);
+    free(request);
     sendResponse(sd_client, buftemp);
     free(buftemp);
 }
