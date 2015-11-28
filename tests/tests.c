@@ -20,7 +20,7 @@ int main()
     struct sockaddr_in socket;
 
     socket.sin_family = AF_INET;
-    socket.sin_port = htons(3000);
+    socket.sin_port = htons(8080);
     socket.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     void *socket_ptr = &socket;
@@ -35,7 +35,7 @@ int main()
         exit(errno);
     }
 
-    printf("MESSAGE RECEIVE : %s \n",buffer);
+    printf("MESSAGE RECEIVED\n");
 
 
 

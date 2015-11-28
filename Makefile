@@ -7,5 +7,5 @@ clean:
 doc:
 	$(MAKE) -C src doc
 
-test:
-	$(MAKE) -C tests
+check:
+	$(MAKE) -C tests check
