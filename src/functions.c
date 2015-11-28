@@ -197,7 +197,6 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
             commandLine = strcat(commandLine, temp); 
             free(temp);
         }
-        printf("%s\n", commandLine);
         int status = system(commandLine);
         free(commandLine);
         if(!WIFEXITED(status))
