@@ -50,7 +50,7 @@ int main(int argc, char **argv)
             (!strcmp(argv[command->number], "stop")) ||
             (!strcmp(argv[command->number], "restart")))
         {
-            return execCommand(argv, command, config, configFile);
+            return execCommand(argc, argv, command, config, configFile);
 
         }
         else

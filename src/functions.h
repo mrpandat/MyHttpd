@@ -42,7 +42,7 @@ void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
 /**
  * function executing command given as argument in the '-a' option
  */
-int execCommand(char **argv, struct chint *command, struct conf_struct *config, struct chint *configFile);
+int execCommand(int argc, char **argv, struct chint *command, struct conf_struct *config, struct chint *configFile);
 
 
 #endif /* !FUNCTIONS_H */
