@@ -198,7 +198,6 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
             free(temp);
         }
         int status = system(commandLine);
-        free(commandLine);
         if(!WIFEXITED(status))
             return 0;
         else return WEXITSTATUS(status);

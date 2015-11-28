@@ -70,7 +70,7 @@ struct conf_struct {
 struct requestHttp {
     char* method;
     char* object;
-    float version_http;
+    float version_http; 
     char* host;
     char* user_agent;
     int content_length;
@@ -81,15 +81,14 @@ struct requestHttp {
  * structure containing some HTTP response informations
  */
 struct responseHttp {
-    float http_version;
-    int http_code;
-    char* http_message;
-    int date;
+    char *http_version;
+    char *http_code;
+    char *http_message;
+    char *date;
     char* server_info;
     char* content_type;
     char* body;
-
-};
+}__attribute__((packed));
 
 /**
  * changing type name 'int' to 'socket' to recognize socket's identifier

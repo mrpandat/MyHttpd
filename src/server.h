@@ -4,7 +4,11 @@
 #include "structures.h"
 
 void initSocket(struct conf_struct *config);
+
 void closeSocket(SOCKET socket);
+
 void sendResponse(SOCKET socket, char* buffer);
+
+char *fillBufferWithStruct(struct responseHttp *response);
 
 #endif

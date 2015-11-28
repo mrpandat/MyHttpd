@@ -31,8 +31,25 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
         exit(1);
     }
     printf("MESSAGE RECEIVE : %s\n\n", buffer);
-    sendResponse(sd_client,"I'am fine thank you\n");
+    struct responseHttp *response= malloc(sizeof(struct responseHttp));
+    response->http_version = "HTTP/1.1";
+    response->http_code = "200";
+    response->http_message = "OK\n";
+    response->date = "Date: Mon, 13 Oct 2015 13:17:20 GMT\n";
+    response->server_info = "Server: Nginx/1.9.5\n";
+    response->content_type = "Content -type: text/html\n\n";
+    response->body = "<h1>MyHTTPd</h1>";
+    
+    char *buftemp = fillBufferWithStruct(response);
+    sendResponse(sd_client, buftemp);
+    free(buftemp);
+}
 
+char *fillBufferWithStruct(struct responseHttp *response)
+{
+    char *buffer = malloc(1024);
+    snprintf(buffer, 1024, "%s%s%s%s%s%s%s", response->http_version, response->http_code, response->http_message, response->date, response->server_info, response->content_type, response->body);
+    return buffer;
 }
 
 void receiveMessage(SOCKET sd, struct sockaddr *server)
