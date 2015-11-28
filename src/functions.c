@@ -158,6 +158,11 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
     {
         initSocket(config);
         free(config);
+        free(config->rootDir);
+        free(config->pidFile);
+        free(config->logFile);
+        free(config);
+        free(configFile);
     }
     else if(!strcmp(argv[command->number], "reload"))
     {
@@ -186,6 +191,8 @@ int execCommand(int argc, char **argv, struct chint *command, struct conf_struct
         free(config->pidFile);
         free(config->logFile);
         free(config);
+        free(configFile);
+
 
     }
     else if(!strcmp(argv[command->number], "stop"))
