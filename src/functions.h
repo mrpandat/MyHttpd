@@ -39,5 +39,10 @@ int checkErrorConf(int fd);
 void fillStruct(char* buffer,char* buffer2, size_t k, struct conf_struct
 *conf_file);
 
+/**
+ * function executing command given as argument in the '-a' option
+ */
+int execCommand(char **argv, struct chint *command, struct conf_struct *config, struct chint *configFile);
+
 
 #endif /* !FUNCTIONS_H */
