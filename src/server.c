@@ -81,7 +81,6 @@ void sendResponse(SOCKET sd, char* buffer)
         fprintf(stderr, "Error when sending message from server\n");
         exit(1);
     }
-    printf("Message Send\n");
 }
 
 
@@ -95,7 +94,6 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
         fprintf(stderr, "Error when accepting socket from server\n");
         exit(1);
     }
-    printf("Client Accepted...\n");
     char buffer[BUFFER_SIZE];
 
     ssize_t n = recv(sd_client, buffer, BUFFER_SIZE, 0);
@@ -123,14 +121,21 @@ void acceptClient(SOCKET sd, struct sockaddr *server)
     char *date = malloc(BUFFER_SIZE);
     char *format = "%a, %d %b %Y %X %Z";
     strftime(date, BUFFER_SIZE, format, t);
-    printf("DATE: %s\n", date);
     response->date = date;
     response->server_info = "Server: myHTTPD: 1.0\n";
     response->content_type = "Content -type: text/html\n\n";
-    response->body = "<h1>MyHTTPd</h1\n";
+    if(!strcmp(checkErrorFile(request->file), "200"))
+    {
+        int fd = open(request->file, O_RDONLY);
+        struct stat fileStat;
+        stat(request->file, &fileStat);
+        char *body = malloc(fileStat.st_size);
+        read(fd, body, fileStat.st_size);
+        response->body = body;
+    }
+    else
+        response->body = "";
     char *buftemp = fillBufferWithStruct(response);
-    printf("Code HTTP: %s\n", response->http_code);
-    printf("Code FILE : %s\n", response->http_message);
     free(request->file);
     free(request->get);
     free(request->version);
@@ -151,7 +156,6 @@ void receiveMessage(SOCKET sd, struct sockaddr *server)
 
     if (listen(sd, 1) < 0)
         fprintf(stderr,"Error while listnening");
-    printf("Now listening...\n");
 
     acceptClient(sd, server);
     closesocket(sd);
@@ -165,7 +169,7 @@ void initSocket(struct conf_struct *config)
 
     int sd = socket(AF_INET , SOCK_STREAM , 0);
     if (sd == -1)
-        printf("Could not create socket");
+        fprintf(stderr, "Could not create socket");
     int bool = 1;
     setsockopt(sd,SOL_SOCKET,SO_REUSEADDR,&bool,sizeof(int));
 
@@ -182,7 +186,6 @@ void initSocket(struct conf_struct *config)
         fprintf(stderr,"Error when binding socket\n");
         exit(1);
     }
-    printf("Connected\n");
     receiveMessage(sd, server_cast);
 
     shutdown(sd,2);
